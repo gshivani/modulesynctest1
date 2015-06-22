@@ -15,7 +15,8 @@ dependencies:
 
 
 deployment:
-	  dev: 
+	
+  dev: 
     branch: master
     commands:
       - sbt assembly
