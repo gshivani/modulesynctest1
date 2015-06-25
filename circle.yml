@@ -1,17 +1,18 @@
-machine:
+	machine:
   java:
     version: oraclejdk8
   services:
     - docker
 
 dependencies:
-  pre:
-  # Clean up all old docker images, just in case.
-  - docker rm $(docker ps -aq) || true
-  - docker rmi $(docker images -q) || true
-	
+	pre:
+				# Clean up all old docker images, just in case.
+    - docker rm $(docker ps -aq) || true
+    - docker rmi $(docker images -q) || true
+    # Uses ENVs set in the CircleCI UI.
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS quay.io
+
 deployment:
-	
   dev: 
     branch: master
     commands:
@@ -37,4 +38,3 @@ deployment:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS quay.io
       - docker build -t="quay.io/ntoggle/itc:staging" .
       - docker push quay.io/ntoggle/itc:staging
-	
