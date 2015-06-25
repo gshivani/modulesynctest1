@@ -1,25 +1,18 @@
-machine:
+	machine:
   java:
     version: oraclejdk8
   services:
     - docker
 
 dependencies:
-  pre:
-  # Clean up all old docker images, just in case.
-  - docker rm $(docker ps -aq) || true
-  - docker rmi $(docker images -q) || true
-		
-  # Uses ENVs set in the CircleCI UI.
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS quay.io
-	# Install sbt 0.13.7 (via tee to account for sudo madness)
-	- echo "deb http://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-	- sudo apt-get update && sudo apt-get install sbt
-	override:
-	- sbt ";test:compile ;it:compile"
-		
+	pre:
+				# Clean up all old docker images, just in case.
+    - docker rm $(docker ps -aq) || true
+    - docker rmi $(docker images -q) || true
+    # Uses ENVs set in the CircleCI UI.
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS quay.io
+
 deployment:
-	
   dev: 
     branch: master
     commands:
@@ -45,4 +38,3 @@ deployment:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS quay.io
       - docker build -t="quay.io/ntoggle/itc:staging" .
       - docker push quay.io/ntoggle/itc:staging
-	
